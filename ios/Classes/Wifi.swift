@@ -28,7 +28,7 @@ public class SwiftWifiPlugin: NSObject, FlutterPlugin {
             case "findAndConnect": // OK
                 findAndConnect(call: call, result: result)
                 break;
-            case "connect": // OK
+            case "openConnection": // OK
                 connect(call: call, result: result)
                 break;
             case "isConnected": // OK
@@ -118,11 +118,11 @@ public class SwiftWifiPlugin: NSObject, FlutterPlugin {
 
     private func connect(call: FlutterMethodCall, result: @escaping FlutterResult) {
         let sSSID = (call.arguments as? [String : AnyObject])?["ssid"] as! String
-        let sPassword = (call.arguments as? [String : AnyObject])?["password"] as! String?
-        let bJoinOnce = (call.arguments as? [String : AnyObject])?["join_once"] as! Bool?
-        let sSecurity = (call.arguments as? [String : AnyObject])?["security"] as! String?
+        let sPassword = ""
+        let bJoinOnce = true
+        let sSecurity = "NONE"
 
-        //        print("SSID : '\(sSSID)'")
+                print("SSID : '\(sSSID)'")
         //        print("PASSWORD : '\(sPassword)'")
         //        print("JOIN_ONCE : '\(bJoinOnce)'")
         //        if (bJoinOnce) {
@@ -137,7 +137,7 @@ public class SwiftWifiPlugin: NSObject, FlutterPlugin {
             NEHotspotConfigurationManager.shared.apply(configuration) { (error) in
                 if (error != nil) {
                     if (error?.localizedDescription == "already associated.") {
-                        print("Connected to " + self.getSSID()!)
+                        print("Connected to '\(sSSID)'")
                         result(true)
                         return
                     } else {
@@ -146,14 +146,14 @@ public class SwiftWifiPlugin: NSObject, FlutterPlugin {
                         return
                     }
                 } else {
-                    print("Connected to " + self.getSSID()!)
+                    print("Connected to '\(sSSID)'")
                     // ssid check is required because if wifi not found (could not connect) there seems to be no error given
-                    result(self.getSSID()! == sSSID)
+                    result( sSSID)
                     return
                 }
             }
         } else {
-            print("Not Connected")
+            print("Not Connected , Not Supported ios under 11")
             result(nil)
             return
         }
